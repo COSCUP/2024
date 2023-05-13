@@ -11,17 +11,12 @@ import type { MetaOptions } from '../metas'
 import type { PopUpData } from '../pop-up'
 import type { Session, ScheduleElement, RawData, SessionType, Room, Speaker, Tag, SessionsMap, ScheduleList, YearOfDate, MonthOfDate, DateOfDate, SchedulDay, HourOfDate, MinuteOfDate, ScheduleTable, RoomId, ScheduleTableBodyCell, ScheduleTableBlankCell, ScheduleTableSpanCell, RoomsMap } from './types'
 import { calculateTimezoneOffset, getDeviceTimezone } from './timezone'
-import { ref, Ref } from 'vue'
 
 const flag = false
 
 export const deviceTimezone = getDeviceTimezone(flag)
 
 console.log('deviceTimezone', deviceTimezone)
-
-export const TIMEZONE_OFFSET: Ref = ref(calculateTimezoneOffset(deviceTimezone))
-
-console.log('TIMEZONE_OFFSET', TIMEZONE_OFFSET)
 
 const compareRoomById = (a: string, b: string) => {
   const nameOrder = ['RB', 'AU']
@@ -225,6 +220,7 @@ export function generateScheduleList (elements: ScheduleElement[]): ScheduleList
   }
 }
 
+// FIXME: 這段如果有辦法的話可以轉為框架做法？
 export function generateSessionPopupContentHtml (session: Session, community: { id: string, name: { 'zh-TW': string, en: string } } | undefined, locale: Locale) {
   return html`
   <article id="session-detail" class="session-detail">
