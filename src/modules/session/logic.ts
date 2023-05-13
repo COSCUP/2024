@@ -10,18 +10,13 @@ import type { Locale } from '../i18n'
 import type { MetaOptions } from '../metas'
 import type { PopUpData } from '../pop-up'
 import type { Session, ScheduleElement, RawData, SessionType, Room, Speaker, Tag, SessionsMap, ScheduleList, YearOfDate, MonthOfDate, DateOfDate, SchedulDay, HourOfDate, MinuteOfDate, ScheduleTable, RoomId, ScheduleTableBodyCell, ScheduleTableBlankCell, ScheduleTableSpanCell, RoomsMap } from './types'
-import { calculateTimezoneOffset, getDeviceTimezone } from './timezone'
-import { ref, Ref } from 'vue'
+import { getDeviceTimezone } from './timezone'
 
 const flag = false
 
 export const deviceTimezone = getDeviceTimezone(flag)
 
 console.log('deviceTimezone', deviceTimezone)
-
-export const TIMEZONE_OFFSET: Ref = ref(calculateTimezoneOffset(deviceTimezone))
-
-console.log('TIMEZONE_OFFSET', TIMEZONE_OFFSET)
 
 const ROOM_ORDER: RoomId[] = [
   'RB105', 'RB101', 'RB102',
@@ -30,7 +25,6 @@ const ROOM_ORDER: RoomId[] = [
   'TR409-2', 'TR410', 'TR411', 'TR412-1', 'TR412-2', 'TR413-1',
   'TR510', 'TR511', 'TR512', 'TR513', 'TR514',
   'TR609', 'TR610', 'TR611', 'TR613', 'TR614', 'TR615', 'TR616'
-
 ]
 
 const compareRoomById = (a: string, b: string) => {
