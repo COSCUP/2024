@@ -22,13 +22,12 @@
         </div>
         <div class="time-zone-container">
           <p v-show="!isChangeTimeZone" class="time-zone-input">
-            {{ currentTimeZone }}
+            {{ currentTimeZone }} 帶入時區字串
           </p>
           <input
             v-show="isChangeTimeZone"
             placeholder=""
-            :value="inputTimeZone"
-            @input="updateInputTimeZone"
+            v-model="inputTimeZone"
             class="time-zone-input"
           />
           <button
@@ -83,6 +82,7 @@ import { Locale } from '@/modules/i18n'
 import { isClient } from '@vueuse/shared'
 import communityData from '@/assets/json/community.json'
 import { Session } from '@/modules/session/types'
+import { calculateTimezoneOffset, deviceTimezone } from '@/modules/session/timezone'
 
 export default defineComponent({
   name: 'Session',
@@ -95,7 +95,7 @@ export default defineComponent({
   setup () {
     const route = useRoute()
     const router = useRouter()
-    const { load, daysSchedule, currentDayIndex, getSessionById, isLoaded } = useSession()
+    const { load, daysSchedule, currentDayIndex, getSessionById, isLoaded, TIMEZONE_OFFSET } = useSession()
     const { openPopUp, removeAll } = usePopUp()
     const { xsOnly } = useBreakpoints()
     const { locale } = useI18n()
@@ -168,17 +168,14 @@ export default defineComponent({
       isChangeTimeZone.value = true
     }
 
-    const updateInputTimeZone = (event) => {
-      inputTimeZone.value = event.target.value
-    }
-
     const saveTimeZone = () => {
-      currentTimeZone.value = inputTimeZone.value
-      isChangeTimeZone.value = false
+      console.log(calculateTimezoneOffset(inputTimeZone.value))
+      console.log('saveTimeZone')
+      TIMEZONE_OFFSET.value = calculateTimezoneOffset(inputTimeZone.value)
     }
 
     const resetTimeZone = () => {
-      inputTimeZone.value = currentTimeZone.value;
+      inputTimeZone.value = deviceTimezone
     }
 
     tryToOpenSessionPopUp()
@@ -207,10 +204,10 @@ export default defineComponent({
       getCurrentTimeZone,
       inputTimeZone,
       isChangeTimeZone,
-      updateInputTimeZone,
       saveTimeZone,
       showChangeTimeZone,
-      resetTimeZone
+      resetTimeZone,
+      TIMEZONE_OFFSET
     }
   },
   async serverPrefetch () {

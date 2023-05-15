@@ -8,7 +8,7 @@ import {
   generateScheduleTable,
   getScheduleDays,
   transformRawData,
-  generateFilterOption,
+  generateFilterOption
 } from './logic'
 import { createModuleHook, useSetupCtx } from '../utils'
 import { ScheduleElement, SessionsMap, RoomId, ScheduleTable, ScheduleList, Session, SessionId, RoomsMap, Room, RoomsStatusMap, RoomStatus, FilterOptions, FilterValue } from './types'
@@ -18,7 +18,7 @@ import io from 'socket.io-client'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Locale } from '@/modules/i18n'
-import { calculateTimezoneOffset, getDeviceTimezone } from './timezone'
+import { calculateTimezoneOffset, deviceTimezone } from './timezone'
 
 interface UseSession {
   isLoaded: Ref<boolean>;
@@ -79,12 +79,7 @@ const _useSession = (): UseSession => {
   })()
   const TIMEZONE_OFFSET: Ref = ref(calculateTimezoneOffset(deviceTimezone))
 
-  // const TIMEZONE_OFFSET = ref<number>(-480)
-  // 取得當前裝置時區
-  const deviceTimezone = getDeviceTimezone()
-  const TIMEZONE_OFFSET: Ref = ref(calculateTimezoneOffset(deviceTimezone))
-
-  // transformRawData ??
+  // transformRawData -> scheduleElements, sessionsMap, roomsMap
   const load = async () => {
     if (isLoaded.value) return
     start()
@@ -232,7 +227,7 @@ const _useSession = (): UseSession => {
       currentSessions.value = []
       return
     }
-    //FIXME: 確認
+    // FIXME: 確認
     const currentTime = fixedTimeZoneDate(new Date(), TIMEZONE_OFFSET.value).getTime() // 毫秒
     // const currentTime = fixedTimeZoneDate(new Date('2020-08-01 13:00'), TIMEZONE_OFFSET).getTime()
     currentSessions.value = Object.values(sessionsMap.value)
@@ -273,7 +268,7 @@ const _useSession = (): UseSession => {
     getRoomStatusById,
     load,
     favoriteSessions,
-    TIMEZONE_OFFSET,
+    TIMEZONE_OFFSET
   }
 }
 
