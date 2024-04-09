@@ -15,9 +15,4 @@ export function getDeviceTimezone (): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
-export function setFlag () {
-  localStorage.setItem('isTimezoneChanged', 'true')
-  console.log('123412412412')
-  return true
-}
 export const deviceTimezone = getDeviceTimezone()

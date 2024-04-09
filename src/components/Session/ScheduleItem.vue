@@ -69,7 +69,7 @@ export default defineComponent({
       type: String,
       required: true
     },
-    currentTimeZone:{
+    currentTimeZone: {
       type: String,
       required: true
     }

@@ -10,11 +10,9 @@ import type { Locale } from '../i18n'
 import type { MetaOptions } from '../metas'
 import type { PopUpData } from '../pop-up'
 import type { Session, ScheduleElement, RawData, SessionType, Room, Speaker, Tag, SessionsMap, ScheduleList, YearOfDate, MonthOfDate, DateOfDate, SchedulDay, HourOfDate, MinuteOfDate, ScheduleTable, RoomId, ScheduleTableBodyCell, ScheduleTableBlankCell, ScheduleTableSpanCell, RoomsMap } from './types'
-import { calculateTimezoneOffset, getDeviceTimezone } from './timezone'
+import { getDeviceTimezone } from './timezone'
 
-const flag = false
-
-export const deviceTimezone = getDeviceTimezone(flag)
+export const deviceTimezone = getDeviceTimezone()
 
 console.log('deviceTimezone', deviceTimezone)
 
@@ -42,7 +40,7 @@ function filterAndSortScheduleElements (elements: ScheduleElement[]): ScheduleEl
 
 function getTimePoints (elements: ScheduleElement[], includeEndTime = true): [HourOfDate, MinuteOfDate][] {
   const format = (time: [HourOfDate, MinuteOfDate]) => time.map(padNumberStart2WithZero).join('')
-  const timePoints = uniqWith<[HourOfDate, MinuteOfDate]>(
+  return uniqWith<[HourOfDate, MinuteOfDate]>(
     elements
       .flatMap(s => includeEndTime
         ? [getPartsOfDate(s.start), getPartsOfDate(s.end)]
@@ -50,7 +48,6 @@ function getTimePoints (elements: ScheduleElement[], includeEndTime = true): [Ho
       .map(({ hour, minute }) => [hour, minute]),
     (a, b) => format(a) === format(b)
   ).sort((a, b) => +format(a) - +format(b))
-  return timePoints
 }
 
 export function transformRawData (rawData: RawData, timeZoneOffsetMinutes: number | null = null) {

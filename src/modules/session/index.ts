@@ -2,7 +2,7 @@
 //
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
-import { computed, InjectionKey, Ref, ref, watch, watchEffect } from 'vue'
+import { computed, InjectionKey, Ref, ref, watch } from 'vue'
 import {
   generateScheduleList,
   generateScheduleTable,
@@ -171,7 +171,6 @@ const _useSession = (): UseSession => {
                   session.speakers.length === 0
                 )
               ) return false
-              else continue
             }
           }
 
