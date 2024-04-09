@@ -4,7 +4,13 @@
 // https://opensource.org/licenses/MIT
 import { computed, InjectionKey, Ref, ref, watch } from 'vue'
 import { createModuleHook, useSetupCtx } from '../utils'
-import { TIMEZONE_OFFSET, generateScheduleList, generateScheduleTable, getScheduleDays, transformRawData, generateFilterOption } from './logic'
+import {
+  generateScheduleList,
+  generateScheduleTable,
+  getScheduleDays,
+  transformRawData,
+  generateFilterOption
+} from './logic'
 import { ScheduleElement, SessionsMap, RoomId, ScheduleTable, ScheduleList, Session, SessionId, RoomsMap, Room, RoomsStatusMap, RoomStatus, FilterOptions, FilterValue } from './types'
 import { fixedTimeZoneDate } from './utils'
 import { useProgress } from '../progress'
