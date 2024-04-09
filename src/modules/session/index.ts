@@ -3,6 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 import { computed, InjectionKey, Ref, ref, watch } from 'vue'
+import { createModuleHook, useSetupCtx } from '../utils'
 import {
   generateScheduleList,
   generateScheduleTable,
@@ -10,7 +11,6 @@ import {
   transformRawData,
   generateFilterOption
 } from './logic'
-import { createModuleHook, useSetupCtx } from '../utils'
 import { ScheduleElement, SessionsMap, RoomId, ScheduleTable, ScheduleList, Session, SessionId, RoomsMap, Room, RoomsStatusMap, RoomStatus, FilterOptions, FilterValue } from './types'
 import { fixedTimeZoneDate } from './utils'
 import { useProgress } from '../progress'
@@ -79,7 +79,6 @@ const _useSession = (): UseSession => {
   })()
   const TIMEZONE_OFFSET: Ref = ref(calculateTimezoneOffset(deviceTimezone))
 
-  // transformRawData -> scheduleElements, sessionsMap, roomsMap
   const load = async () => {
     if (isLoaded.value) return
     start()
