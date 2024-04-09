@@ -192,7 +192,6 @@ const _useSession = (): UseSession => {
                   session.speakers.length === 0
                 )
               ) return false
-              else continue
             }
           }
 
