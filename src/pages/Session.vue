@@ -7,43 +7,17 @@
 
 <template>
   <main id="session" class="page-container">
-    <ScheduleNavbar :currentTimeZone="currentTimeZone" />
-    <div>
-      <div class="timezone-wrapper">
-        <div class="title-wrapper">
-          <span>TimeZone:</span>
-          <button
-            v-show="isChangeTimeZone"
-            class="side-title"
-            type="button"
-            @click="resetTimeZone"
-          >Use event time zone</button>
-
-        </div>
-        <div class="time-zone-container">
-          <p v-show="!isChangeTimeZone" class="time-zone-input">
-            {{ currentTimeZone }}
-          </p>
-          <input
-            v-show="isChangeTimeZone"
-            placeholder=""
-            v-model.trim="inputTimeZone"
-            class="time-zone-input"
-          />
-          <button
-            v-show="!isChangeTimeZone"
-            type="button"
-            @click="showChangeTimeZone"
-          >
-            change
-          </button>
-          <button v-show="isChangeTimeZone" type="button" @click="saveTimeZone">
-            Save
-          </button>
-        </div>
-      </div>
+    <ScheduleNavbar :currentTimeZone="currentTimeZone"/>
+    <div class="time-zone-container">
+      <label for="time-zone-select">時區：</label>
+      <ModelSelect
+        id="time-zone-select"
+        :options="timeZoneOptions"
+        v-model="currentTimeZone"
+      />
+      <button @click="resetTimeZone" :class="{ available: currentTimeZone !== deviceTimezone }">重設</button>
     </div>
-    <SessionFilter />
+    <SessionFilter/>
     <template v-for="(schedule, index) in daysSchedule">
       <ScheduleList
         v-if="xsOnly"
@@ -65,15 +39,17 @@
 <script lang="ts">
 // import io, { Socket } from 'socket.io-client'
 // import axios from 'axios'
-import { defineComponent, watch, ref, onMounted } from 'vue'
+import { defineComponent, watch, ref } from 'vue'
 import { useBreakpoints } from '@/modules/breakpoints'
 import { useSession } from '@/modules/session'
 import ScheduleNavbar from '@/components/Session/ScheduleNavbar.vue'
 import ScheduleTable from '@/components/Session/ScheduleTable.vue'
 import ScheduleList from '@/components/Session/ScheduleList.vue'
 import SessionFilter from '@/components/Session/SessionFilter.vue'
+import { ModelSelect } from 'vue-search-select'
 
 import '@/assets/scss/pages/session.scss'
+import 'vue-search-select/dist/VueSearchSelect.css'
 import { usePopUp } from '@/modules/pop-up'
 import { useRoute, useRouter } from 'vue-router'
 import { generateSessionPopupData } from '@/modules/session/logic'
@@ -82,7 +58,7 @@ import { Locale } from '@/modules/i18n'
 import { isClient } from '@vueuse/shared'
 import communityData from '@/assets/json/community.json'
 import { Session } from '@/modules/session/types'
-import { calculateTimezoneOffset, deviceTimezone } from '@/modules/session/timezone'
+import { calculateTimezoneOffset } from '@/modules/session/timezone'
 
 export default defineComponent({
   name: 'Session',
@@ -90,30 +66,41 @@ export default defineComponent({
     ScheduleNavbar,
     ScheduleTable,
     ScheduleList,
-    SessionFilter
+    SessionFilter,
+    ModelSelect
   },
   setup () {
     const route = useRoute()
     const router = useRouter()
-    const { load, daysSchedule, currentDayIndex, getSessionById, isLoaded, TIMEZONE_OFFSET } = useSession()
-    const { openPopUp, removeAll } = usePopUp()
+    const {
+      load,
+      daysSchedule,
+      currentDayIndex,
+      getSessionById,
+      isLoaded,
+      TIMEZONE_OFFSET
+    } = useSession()
+    const {
+      openPopUp,
+      removeAll
+    } = usePopUp()
     const { xsOnly } = useBreakpoints()
     const { locale } = useI18n()
 
-    const currentTimeZone = ref('')
-    const inputTimeZone = ref('')
-    const isChangeTimeZone = ref(false)
-    const isTimezoneValid = ref(false)
-    //  取得當前時區
-    const getCurrentTimeZone = async () => {
-      try {
-        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-        // 更新當前時區
-        currentTimeZone.value = timeZone
-      } catch (error) {
-        console.error('取得當前時區:', error)
-      }
+    const timeZoneOptions = Intl.supportedValuesOf('timeZone').map((timeZone) => ({
+      value: timeZone,
+      text: timeZone
+    }))
+    const deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const currentTimeZone = ref(deviceTimezone)
+
+    const resetTimeZone = () => {
+      currentTimeZone.value = deviceTimezone
     }
+
+    watch(currentTimeZone, () => {
+      TIMEZONE_OFFSET.value = calculateTimezoneOffset(currentTimeZone.value)
+    })
 
     function getCommunityFromSession (session: Session) {
       return communityData.communities.find((c) => c.track === session.type['zh-TW'].name)
@@ -164,36 +151,6 @@ export default defineComponent({
       }
     }
 
-    const showChangeTimeZone = () => {
-      inputTimeZone.value = currentTimeZone.value
-      isChangeTimeZone.value = true
-    }
-
-    const saveTimeZone = () => {
-      if (inputTimeZone.value === '') {
-        alert('Invalid timezone')
-      } else {
-        validateTimezone()
-        if (isTimezoneValid.value) {
-          TIMEZONE_OFFSET.value = calculateTimezoneOffset(inputTimeZone.value)
-        } else {
-          alert('Invalid timezone')
-        }
-      }
-    }
-
-    const validateTimezone = () => {
-      try {
-        Intl.DateTimeFormat(undefined, { timeZone: inputTimeZone.value });
-        isTimezoneValid.value = true
-      } catch (error) {
-        isTimezoneValid.value = false
-      }
-    }
-    const resetTimeZone = () => {
-      inputTimeZone.value = deviceTimezone
-    }
-
     tryToOpenSessionPopUp()
     watch(() => [route.params.sessionId, isLoaded.value], () => {
       tryToOpenSessionPopUp()
@@ -207,8 +164,6 @@ export default defineComponent({
       })
     })
 
-    onMounted(getCurrentTimeZone)
-
     return {
       xsOnly,
       currentDayIndex,
@@ -216,12 +171,9 @@ export default defineComponent({
       load,
       tryToOpenSessionPopUp,
       route,
+      timeZoneOptions,
       currentTimeZone,
-      getCurrentTimeZone,
-      inputTimeZone,
-      isChangeTimeZone,
-      saveTimeZone,
-      showChangeTimeZone,
+      deviceTimezone,
       resetTimeZone,
       TIMEZONE_OFFSET
     }
@@ -236,54 +188,38 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.timezone-wrapper {
-  width: 20rem;
-  padding: 2rem;
+.time-zone-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
   gap: 0.5rem;
+  padding: 0.5rem 0;
+  width: 100vw;
+  position: sticky;
+  left: 0;
 
-  .title-wrapper {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  z-index: 3; /* Makes dropdown menu above table headers */
 
-    .side-title {
-      font-size: 0.6rem;
-      text-align: right;
-      cursor: pointer;
-      background-color: transparent;
-      border: none;
-      color: #3b9838;
-    }
+  label {
+    align-self: center;
   }
 
-  .time-zone-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    button {
-      cursor: pointer;
-      background-color: transparent;
-      border: none;
-      color: white;
-      border: 1px solid white;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-
-      &:hover {
-        background-color: #80808033;
-        color: #3b9838;
-      }
-    }
+  .dropdown {
+    width: 20rem;
   }
-}
 
-.time-zone-input {
-  font-size: 1rem;
-  font-weight: 500;
+  button {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(-100%); /* Slide from the left */
+    transition: opacity 0.5s, transform 0.5s;
+    padding: 0.5rem 1rem;
+
+  }
+
+  .available {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(0%);
+  }
 }
 </style>
