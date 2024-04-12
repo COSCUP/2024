@@ -18,7 +18,7 @@ import io from 'socket.io-client'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Locale } from '@/modules/i18n'
-import { calculateTimezoneOffset, deviceTimezone } from './timezone'
+import { calculateTimezoneOffset } from './timezone'
 
 interface UseSession {
   isLoaded: Ref<boolean>;
@@ -77,6 +77,7 @@ const _useSession = (): UseSession => {
       }
     })
   })()
+  const deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const TIMEZONE_OFFSET: Ref = ref(calculateTimezoneOffset(deviceTimezone))
 
   const load = async () => {
