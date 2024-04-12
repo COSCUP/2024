@@ -9,13 +9,17 @@
   <main id="session" class="page-container">
     <ScheduleNavbar :currentTimeZone="currentTimeZone"/>
     <div class="time-zone-container">
-      <label for="time-zone-select">時區：</label>
+      <label for="time-zone-select">{{ $t('session.time_zone.select_label') }}</label>
       <ModelSelect
         id="time-zone-select"
         :options="timeZoneOptions"
         v-model="currentTimeZone"
       />
-      <button @click="resetTimeZone" :class="{ available: currentTimeZone !== deviceTimezone }">重設</button>
+      <button
+        @click="resetTimeZone"
+        :class="{ available: currentTimeZone !== deviceTimezone }"
+      >{{ $t('session.time_zone.reset_button') }}</button
+      >
     </div>
     <SessionFilter/>
     <template v-for="(schedule, index) in daysSchedule">
