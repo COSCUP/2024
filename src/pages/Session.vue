@@ -10,7 +10,7 @@
   <main id="session" class="page-container">
     <ScheduleNavbar :currentTimeZone="currentTimeZone"/>
     <div class="time-zone-container">
-      <label for="time-zone-select">{{ $t('session.time_zone.select_label') }}</label>
+      <label for="time-zone-select">{{ t('session.time_zone.select_label') }}</label>
       <ModelSelect
         id="time-zone-select"
         :options="timeZoneOptions"
@@ -19,7 +19,7 @@
       <button
         @click="resetTimeZone"
         :class="{ available: currentTimeZone !== deviceTimezone }"
-      >{{ $t('session.time_zone.reset_button') }}</button
+      >{{ t('session.time_zone.reset_button') }}</button
       >
     </div>
     <SessionFilter/>
@@ -90,7 +90,7 @@ export default defineComponent({
       removeAll
     } = usePopUp()
     const { xsOnly } = useBreakpoints()
-    const { locale } = useI18n()
+    const { t, locale } = useI18n()
 
     const timeZoneOptions = Intl.supportedValuesOf('timeZone').map((timeZone) => ({
       value: timeZone,
@@ -170,6 +170,7 @@ export default defineComponent({
     })
 
     return {
+      t,
       xsOnly,
       currentDayIndex,
       daysSchedule,
