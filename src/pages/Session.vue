@@ -214,15 +214,19 @@ export default defineComponent({
   button {
     visibility: hidden;
     opacity: 0;
+    width: 0;
+    white-space: nowrap;
+    margin-left: -0.5rem; /* Remove flex gap when hidden */
     transform: translateX(-100%); /* Slide from the left */
     transition: opacity 0.5s, transform 0.5s;
     padding: 0.5rem 1rem;
-
   }
 
   .available {
     visibility: visible;
     opacity: 1;
+    margin-left: 0;
+    width: auto;
     transform: translateX(0%);
   }
 }
