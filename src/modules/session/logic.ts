@@ -10,11 +10,6 @@ import type { Locale } from '../i18n'
 import type { MetaOptions } from '../metas'
 import type { PopUpData } from '../pop-up'
 import type { Session, ScheduleElement, RawData, SessionType, Room, Speaker, Tag, SessionsMap, ScheduleList, YearOfDate, MonthOfDate, DateOfDate, SchedulDay, HourOfDate, MinuteOfDate, ScheduleTable, RoomId, ScheduleTableBodyCell, ScheduleTableBlankCell, ScheduleTableSpanCell, RoomsMap } from './types'
-import { getDeviceTimezone } from './timezone'
-
-export const deviceTimezone = getDeviceTimezone()
-
-console.log('deviceTimezone', deviceTimezone)
 
 const ROOM_ORDER: RoomId[] = [
   'RB105', 'RB101', 'RB102',
