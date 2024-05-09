@@ -207,10 +207,12 @@ export default defineComponent({
 
   label {
     align-self: center;
+    white-space: nowrap;
   }
 
   .dropdown {
-    width: 20rem;
+    max-width: 20rem;
+    white-space: nowrap;
   }
 
   button {
