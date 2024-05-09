@@ -97,14 +97,17 @@ export default defineComponent({
       text: timeZone
     }))
     const deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    const currentTimeZone = ref(deviceTimezone)
+    const storedTimeZone = localStorage.getItem('timeZone')
+    const currentTimeZone = ref(storedTimeZone ?? deviceTimezone)
 
     const resetTimeZone = () => {
       currentTimeZone.value = deviceTimezone
+      localStorage.removeItem('timeZone')
     }
 
     watch(currentTimeZone, () => {
       TIMEZONE_OFFSET.value = calculateTimezoneOffset(currentTimeZone.value)
+      localStorage.setItem('timeZone', currentTimeZone.value)
     })
 
     function getCommunityFromSession (session: Session) {
