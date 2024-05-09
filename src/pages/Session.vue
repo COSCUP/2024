@@ -8,7 +8,7 @@
 
 <template>
   <main id="session" class="page-container">
-    <ScheduleNavbar :currentTimeZone="currentTimeZone"/>
+    <ScheduleNavbar />
     <div class="time-zone-container">
       <label for="time-zone-select">{{ t('session.time_zone.select_label') }}</label>
       <ModelSelect

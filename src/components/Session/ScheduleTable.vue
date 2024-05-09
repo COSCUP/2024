@@ -25,7 +25,7 @@
           :rowspan="cell.rowspan"
         >
           <div class="cell-content">
-            <ScheduleItem v-if="cell.type === 'session'" :session-id="cell.element.session" :currentTimeZone="currentTimeZone"></ScheduleItem>
+            <ScheduleItem v-if="cell.type === 'session'" :session-id="cell.element.session"></ScheduleItem>
           </div>
         </td>
       </tr>
