@@ -61,7 +61,7 @@ const _useMetas = (): UseMetas => {
     setMetas(defaultMetaValues)
   }
 
-  const { lang, title, description, ogImage, ogSiteName, ogType, ogUrl } = metaRefs
+  const { lang, title,description, ogImage, ogSiteName, ogType, ogUrl } = metaRefs
 
   useHead({
     htmlAttrs: {
@@ -70,7 +70,6 @@ const _useMetas = (): UseMetas => {
     title,
     meta: [
       { name: 'description', content: description },
-      { property: 'og:title', content: title },
       { property: 'og:description', content: description },
       { property: 'og:url', content: ogUrl },
       { property: 'og:image', content: ogImage },

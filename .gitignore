@@ -30,6 +30,7 @@ public/json/ytLink.json
 public/json/community.json
 public/json/topics.json
 public/sitemap.xml
+public/images/sessions/*
 src/assets/json/announcement.json
 src/assets/json/session.json
 src/assets/json/staff.json

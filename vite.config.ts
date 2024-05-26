@@ -6,6 +6,7 @@ import Components from 'unplugin-vue-components/vite'
 import ViteIcons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import { VitePWA } from 'vite-plugin-pwa'
+import generateOGImage  from './scripts/pre-build/generateOGImage'
 
 export default defineConfig(({ mode, command }) => {
   const parsed = loadEnv(mode, process.cwd())
@@ -143,7 +144,8 @@ export default defineConfig(({ mode, command }) => {
               ]
             : []
         }
-      })
+      }),
+      generateOGImage()
     ],
     ssgOptions: {
       script: 'async',

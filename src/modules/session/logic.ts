@@ -314,11 +314,15 @@ export function generateSessionPopupContentHtml (session: Session, community: { 
 }
 
 export function generateSessionMetaOptions (session: Session, locale: Locale): MetaOptions {
+  console.log('Session title:', session[locale].title);
+  console.log('Image part: ',`${getRootUrl()}images/sessions/${session.id}.png`);
+  console.log('Local:',`${locale}`)
   return {
     title: session[locale].title,
     description: escape(truncate(session[locale].description, { length: 80 })),
+    ogTitle: session[locale].title,
     ogUrl: `${getRootUrl()}${locale}/session/${session.id}`,
-    ogImage: session.speakers.length > 0 ? session.speakers[Math.floor(Math.random() * session.speakers.length)].avatar : undefined
+    ogImage: `${getRootUrl()}/images/sessions/${session.id}.png`,
   }
 }
 
