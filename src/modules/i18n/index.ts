@@ -25,8 +25,8 @@ function getFallbackLocale () {
   return 'en'
 }
 
-const i18nOptions: I18nOptions = {
-  legacy: false,
+const i18nOptions = {
+  // legacy: false,
   locale: 'zh-TW',
   fallbackLocale: getFallbackLocale(),
   messages
@@ -69,7 +69,7 @@ export const setupI18nRoutes = (routes: RouteRecordRaw[]) => {
 }
 
 export const install: UserModuleInstall = ({ app }) => {
-  const i18n = createI18n<I18nOptions>(i18nOptions)
+  const i18n = createI18n(i18nOptions)
   app.use(i18n)
 }
 

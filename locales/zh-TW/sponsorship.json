@@ -12,7 +12,7 @@
       "title": "售罄：感激所有贊助商支持， COSCUP 2023 贊助徵求正式截止。",
       "list": [
         "歡迎所有贊助商在活動兩天參觀 COSCUP，並來信預約 COSCUP 2023 贊助。",
-        "email: sponsorship@coscup.org"
+        "email: sponsorship{'@'}coscup.org"
       ]
     },
     "description": "COSCUP 過去三至五年平均約有 2,000 多位會眾和數十個社群一同參與。",
@@ -258,7 +258,7 @@
     "list": [
       {
         "q": "除了目前的贊助方案，還可以贊助其他項目嗎？或是不需要某些項目換折扣",
-        "a": "COSCUP 歡迎洽談客製化贊助方案，請來信聯繫我們：[sponsorship@coscup.org](mailto:sponsorship@coscup.org)"
+        "a": "COSCUP 歡迎洽談客製化贊助方案，請來信聯繫我們：[sponsorship{'@'}coscup.org](mailto:sponsorship{'@'}coscup.org)"
       },
       {
         "q": "我們公司想要在 COSCUP 擺攤位，要選擇哪個贊助級別呢？",

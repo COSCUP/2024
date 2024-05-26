@@ -12,7 +12,7 @@
       "title": "SOLD OUT: Thanks to the support of all sponsors, COSCUP 2023 is officially closed for sponsorship requests.",
       "list": [
         "Sponsors are welcome to visit COSCUP on both days of the event and email us to reserve a sponsorship for COSCUP 2023.",
-        "email: sponsorship@coscup.org"
+        "email: sponsorship{'@'}coscup.org"
       ]
     },
     "description": "For the past 3 to 5 years, COSCUP has received an average of 2,000 participants from dozens of communities.",
@@ -251,7 +251,7 @@
     "list": [
       {
         "q": "Besides the current sponsorship plan, can I sponsor other projects or items?",
-        "a": "Yes, contact us at [sponsorship@coscup.org](mailto:sponsorship@coscup.org) to create custom sponsorship packages."
+        "a": "Yes, contact us at [sponsorship{'@'}coscup.org](mailto:sponsorship{'@'}coscup.org) to create custom sponsorship packages."
       },
       {
         "q": "Our company would like to have a booth at COSCUP. Which sponsorship level should we choose?",
