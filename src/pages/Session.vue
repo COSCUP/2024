@@ -18,7 +18,7 @@
       />
       <button
         @click="resetTimeZone"
-        :class="{ available: currentTimeZone !== deviceTimezone }"
+        :class="{ available: currentTimeZone !== defaultTimeZone }"
       >{{ t('session.time_zone.reset_button') }}</button
       >
     </div>
@@ -96,12 +96,12 @@ export default defineComponent({
       value: timeZone,
       text: timeZone
     }))
-    const deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const defaultTimeZone = 'Asia/Taipei' // Time zone of the event
     const storedTimeZone = localStorage.getItem('timeZone')
-    const currentTimeZone = ref(storedTimeZone ?? deviceTimezone)
+    const currentTimeZone = ref(storedTimeZone ?? defaultTimeZone)
 
     const resetTimeZone = () => {
-      currentTimeZone.value = deviceTimezone
+      currentTimeZone.value = defaultTimeZone
       localStorage.removeItem('timeZone')
     }
 
@@ -182,7 +182,7 @@ export default defineComponent({
       route,
       timeZoneOptions,
       currentTimeZone,
-      deviceTimezone,
+      defaultTimeZone,
       resetTimeZone,
       TIMEZONE_OFFSET
     }

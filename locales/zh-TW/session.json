@@ -17,7 +17,7 @@
   },
   "time_zone": {
     "select_label": "時區：",
-    "reset_button": "重設為當地時間"
+    "reset_button": "重設為會場時間"
   },
   "share_title": "COSCUP {year} 我想聽的議程們",
   "share_copied": "複製網址成功",
