@@ -7,7 +7,43 @@
 
 <template>
   <main id="session" class="page-container">
-    <ScheduleNavbar />
+    <ScheduleNavbar :currentTimeZone="currentTimeZone" />
+    <div>
+      <div class="timezone-wrapper">
+        <div class="title-wrapper">
+          <span>TimeZone:</span>
+          <button
+            v-show="isChangeTimeZone"
+            class="side-title"
+            type="button"
+            @click="resetTimeZone"
+          >Use event time zone</button>
+
+        </div>
+        <div class="time-zone-container">
+          <p v-show="!isChangeTimeZone" class="time-zone-input">
+            {{ currentTimeZone }}
+          </p>
+          <input
+            v-show="isChangeTimeZone"
+            placeholder=""
+            :value="inputTimeZone"
+            @input="updateInputTimeZone"
+            class="time-zone-input"
+          />
+          <button
+            v-show="!isChangeTimeZone"
+            type="button"
+            @click="showChangeTimeZone"
+          >
+            change
+          </button>
+          <button v-show="isChangeTimeZone" type="button" @click="saveTimeZone">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
     <SessionFilter />
     <template v-for="(schedule, index) in daysSchedule">
       <ScheduleList
@@ -21,6 +57,7 @@
         v-show="currentDayIndex === index"
         :key="`table-${schedule.day.join('')}`"
         :table="schedule.table"
+        :currentTimeZone="currentTimeZone"
       />
     </template>
   </main>
@@ -29,7 +66,7 @@
 <script lang="ts">
 // import io, { Socket } from 'socket.io-client'
 // import axios from 'axios'
-import { defineComponent, watch } from 'vue'
+import { defineComponent, watch, ref, onMounted } from 'vue'
 import { useBreakpoints } from '@/modules/breakpoints'
 import { useSession } from '@/modules/session'
 import ScheduleNavbar from '@/components/Session/ScheduleNavbar.vue'
@@ -62,6 +99,20 @@ export default defineComponent({
     const { openPopUp, removeAll } = usePopUp()
     const { xsOnly } = useBreakpoints()
     const { locale } = useI18n()
+
+    const currentTimeZone = ref('')
+    const inputTimeZone = ref('')
+    const isChangeTimeZone = ref(false)
+    //  取得當前時區
+    const getCurrentTimeZone = async () => {
+      try {
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        // 更新當前時區
+        currentTimeZone.value = timeZone
+      } catch (error) {
+        console.error('取得當前時區:', error)
+      }
+    }
 
     function getCommunityFromSession (session: Session) {
       return communityData.communities.find((c) => c.track === session.type['zh-TW'].name)
@@ -112,6 +163,24 @@ export default defineComponent({
       }
     }
 
+    const showChangeTimeZone = () => {
+      inputTimeZone.value = currentTimeZone.value
+      isChangeTimeZone.value = true
+    }
+
+    const updateInputTimeZone = (event) => {
+      inputTimeZone.value = event.target.value
+    }
+
+    const saveTimeZone = () => {
+      currentTimeZone.value = inputTimeZone.value
+      isChangeTimeZone.value = false
+    }
+
+    const resetTimeZone = () => {
+      inputTimeZone.value = currentTimeZone.value;
+    }
+
     tryToOpenSessionPopUp()
     watch(() => [route.params.sessionId, isLoaded.value], () => {
       tryToOpenSessionPopUp()
@@ -125,13 +194,23 @@ export default defineComponent({
       })
     })
 
+    onMounted(getCurrentTimeZone)
+
     return {
       xsOnly,
       currentDayIndex,
       daysSchedule,
       load,
       tryToOpenSessionPopUp,
-      route
+      route,
+      currentTimeZone,
+      getCurrentTimeZone,
+      inputTimeZone,
+      isChangeTimeZone,
+      updateInputTimeZone,
+      saveTimeZone,
+      showChangeTimeZone,
+      resetTimeZone
     }
   },
   async serverPrefetch () {
@@ -142,3 +221,56 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped lang="scss">
+.timezone-wrapper {
+  width: 20rem;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .title-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    .side-title {
+      font-size: 0.6rem;
+      text-align: right;
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+      color: #3b9838;
+    }
+  }
+
+  .time-zone-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    button {
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+      color: white;
+      border: 1px solid white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+
+      &:hover {
+        background-color: #80808033;
+        color: #3b9838;
+      }
+    }
+  }
+}
+
+.time-zone-input {
+  font-size: 1rem;
+  font-weight: 500;
+}
+</style>
