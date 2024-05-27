@@ -4,7 +4,13 @@
 // https://opensource.org/licenses/MIT
 import { computed, InjectionKey, Ref, ref, watch } from 'vue'
 import { createModuleHook, useSetupCtx } from '../utils'
-import { TIMEZONE_OFFSET, generateScheduleList, generateScheduleTable, getScheduleDays, transformRawData, generateFilterOption } from './logic'
+import {
+  generateScheduleList,
+  generateScheduleTable,
+  getScheduleDays,
+  transformRawData,
+  generateFilterOption,
+} from './logic'
 import { ScheduleElement, SessionsMap, RoomId, ScheduleTable, ScheduleList, Session, SessionId, RoomsMap, Room, RoomsStatusMap, RoomStatus, FilterOptions, FilterValue } from './types'
 import { fixedTimeZoneDate } from './utils'
 import { useProgress } from '../progress'
@@ -12,6 +18,7 @@ import io from 'socket.io-client'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Locale } from '@/modules/i18n'
+import { calculateTimezoneOffset, deviceTimezone } from './timezone'
 
 interface UseSession {
   isLoaded: Ref<boolean>;
@@ -30,6 +37,7 @@ interface UseSession {
   getRoomById: (id: RoomId) => Room;
   getRoomStatusById: (id: RoomId) => RoomStatus;
   load: () => Promise<void>;
+  TIMEZONE_OFFSET: Ref<number>;
 }
 
 const PROVIDE_KEY: InjectionKey<UseSession> = Symbol('session')
@@ -69,13 +77,14 @@ const _useSession = (): UseSession => {
       }
     })
   })()
+  const TIMEZONE_OFFSET: Ref = ref(calculateTimezoneOffset(deviceTimezone))
 
   const load = async () => {
     if (isLoaded.value) return
     start()
     const { default: _rawData } = await import('@/assets/json/session.json')
     const { scheduleElements: _scheduleElements, sessionsMap: __sessionsMap, roomsMap: _roomsMap } =
-      transformRawData(_rawData, TIMEZONE_OFFSET)
+      transformRawData(_rawData, TIMEZONE_OFFSET.value)
     scheduleElements.value = _scheduleElements
     _sessionsMap.value = __sessionsMap
     roomsMap.value = _roomsMap
@@ -217,7 +226,7 @@ const _useSession = (): UseSession => {
       currentSessions.value = []
       return
     }
-    const currentTime = fixedTimeZoneDate(new Date(), TIMEZONE_OFFSET).getTime()
+    const currentTime = fixedTimeZoneDate(new Date(), TIMEZONE_OFFSET.value).getTime()
     // const currentTime = fixedTimeZoneDate(new Date('2020-08-01 13:00'), TIMEZONE_OFFSET).getTime()
     currentSessions.value = Object.values(sessionsMap.value)
       .filter(s => s.start.getTime() <= currentTime && currentTime <= s.end.getTime())
@@ -250,9 +259,9 @@ const _useSession = (): UseSession => {
     getRoomById,
     getRoomStatusById,
     load,
-    favoriteSessions
+    favoriteSessions,
+    TIMEZONE_OFFSET,
   }
 }
 
-// export const setup = createModuleSetup(PROVIDE_KEY, _useSession)
 export const useSession = createModuleHook(PROVIDE_KEY, _useSession)
