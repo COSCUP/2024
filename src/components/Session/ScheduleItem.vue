@@ -68,6 +68,10 @@ export default defineComponent({
     sessionId: {
       type: String,
       required: true
+    },
+    currentTimeZone:{
+      type: String,
+      required: true
     }
   },
   setup (props) {
