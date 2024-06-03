@@ -1,24 +1,26 @@
 // Copyright (c) 2021 DevilTea
-//
+//           (c) 2024 Riley Ho
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
+
+import { cpSync } from 'fs'
 import { dirname, join } from 'path'
-import copy from 'recursive-copy'
 import { fileURLToPath } from 'url'
 
-(async () => {
-  await copy(
-    join(dirname(fileURLToPath(import.meta.url)), '../../dist/zh-TW/'),
-    join(dirname(fileURLToPath(import.meta.url)), '../../dist/'),
-    {
-      overwrite: true
-    }
-  )
-  await copy(
-    join(dirname(fileURLToPath(import.meta.url)), '../../dist/index.html'),
-    join(dirname(fileURLToPath(import.meta.url)), '../../dist/404.html'),
-    {
-      overwrite: true
-    }
-  )
-})()
+const currentScriptDir = dirname(fileURLToPath(import.meta.url)) // Get the directory of the current script file
+const distDir = join(currentScriptDir, '../../dist/') // Get the absolute path of the dist directory
+
+cpSync(
+  join(distDir, 'zh-TW/'),
+  distDir,
+  {
+    recursive: true,
+    force: true
+  }
+)
+
+cpSync(
+  join(distDir, 'index.html'),
+  join(distDir, '404.html'),
+  { force: true }
+)
