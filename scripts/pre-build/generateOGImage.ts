@@ -180,7 +180,7 @@ async function generateSessionImage(session: Session,typeById: SomethingById,nam
   let currentX_spk = 150;
   let currentY_spk = 430;
   speakers.forEach(speaker => {
-    currentX = drawTag(ctx, nameById[speaker], currentX_spk, currentY_spk); // 更新 currentX 到下一个标签的位置
+    currentX_spk = drawTag(ctx, nameById[speaker], currentX_spk, currentY_spk); // 更新 currentX 到下一个标签的位置
   });
   // draw session type
   const type = session.type;
