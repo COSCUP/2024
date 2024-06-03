@@ -11,8 +11,6 @@ import type { MetaOptions } from '../metas'
 import type { PopUpData } from '../pop-up'
 import type { Session, ScheduleElement, RawData, SessionType, Room, Speaker, Tag, SessionsMap, ScheduleList, YearOfDate, MonthOfDate, DateOfDate, SchedulDay, HourOfDate, MinuteOfDate, ScheduleTable, RoomId, ScheduleTableBodyCell, ScheduleTableBlankCell, ScheduleTableSpanCell, RoomsMap } from './types'
 
-export const TIMEZONE_OFFSET: number = -480
-
 const compareRoomById = (a: string, b: string) => {
   const nameOrder = ['RB', 'AU']
   const [aName, aNum] = a.split(' ')
@@ -37,7 +35,7 @@ function filterAndSortScheduleElements (elements: ScheduleElement[]): ScheduleEl
 
 function getTimePoints (elements: ScheduleElement[], includeEndTime = true): [HourOfDate, MinuteOfDate][] {
   const format = (time: [HourOfDate, MinuteOfDate]) => time.map(padNumberStart2WithZero).join('')
-  const timePoints = uniqWith<[HourOfDate, MinuteOfDate]>(
+  return uniqWith<[HourOfDate, MinuteOfDate]>(
     elements
       .flatMap(s => includeEndTime
         ? [getPartsOfDate(s.start), getPartsOfDate(s.end)]
@@ -45,7 +43,6 @@ function getTimePoints (elements: ScheduleElement[], includeEndTime = true): [Ho
       .map(({ hour, minute }) => [hour, minute]),
     (a, b) => format(a) === format(b)
   ).sort((a, b) => +format(a) - +format(b))
-  return timePoints
 }
 
 export function transformRawData (rawData: RawData, timeZoneOffsetMinutes: number | null = null) {
@@ -215,6 +212,7 @@ export function generateScheduleList (elements: ScheduleElement[]): ScheduleList
   }
 }
 
+// FIXME: 這段如果有辦法的話可以轉為框架做法？
 export function generateSessionPopupContentHtml (session: Session, community: { id: string, name: { 'zh-TW': string, en: string } } | undefined, locale: Locale) {
   return html`
   <article id="session-detail" class="session-detail">
