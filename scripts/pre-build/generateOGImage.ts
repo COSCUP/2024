@@ -47,11 +47,17 @@ interface SomethingById {
   [id: string]: string;
 }
 
-export default async function generateOGImage(){
+export default function generateOGImage(command: string) {
   return {
     name: 'vite-plugin-generate-og-images',
     async buildStart() {
-    console.log('Start OG generating');
+      console.log(command);
+      if (command == 'serve') {
+        console.log('Skipping OG image generation in development mode.');
+        return;
+      }
+
+      console.log('Start OG generating');
       registerFont(path.resolve(__dirname, '../../src/assets/fonts/TaipeiSansTCBeta-Bold/TaipeiSansTCBeta-Bold.ttf'), { family: 'TaipeiSansTCBeta-Bold' });
       // reading session.json
       const sessionsData: { sessions: Session[] } = JSON.parse(fs.readFileSync('./src/assets/json/session.json', 'utf-8'));
@@ -70,7 +76,7 @@ export default async function generateOGImage(){
 
       // generate image
       for (const session of sessionsData.sessions) {
-        await generateSessionImage(session,typeById,nameById);
+        await generateSessionImage(session, typeById, nameById);
       }
 
       console.log('All OG images have been generated.');
@@ -132,8 +138,7 @@ function drawTag(ctx: CanvasRenderingContext2D, tag: string, x: number, y: numbe
   return x + rectWidth + 15;
 }
 
-
-async function generateSessionImage(session: Session,typeById: SomethingById,nameById: SomethingById): Promise<void> {
+async function generateSessionImage(session: Session, typeById: SomethingById, nameById: SomethingById): Promise<void> {
   const dirPath = path.resolve(__dirname, '../../public/images/sessions');
   // Check if the directory exists, if not, create it
   if (!fs.existsSync(dirPath)) {
@@ -152,7 +157,7 @@ async function generateSessionImage(session: Session,typeById: SomethingById,nam
   const canvasWidth = 1200;
   const canvasHeight = 630;
   const canvas = createCanvas(canvasWidth, canvasHeight);
-  const ctx = canvas.getContext('2d') ;
+  const ctx = canvas.getContext('2d');
   // set background image
   const background = await loadImage('./src/assets/images/og_background.jpg');
   ctx.drawImage(background, 0, 0, canvasWidth, canvasHeight);
@@ -192,4 +197,3 @@ async function generateSessionImage(session: Session,typeById: SomethingById,nam
   fs.writeFileSync(outputPath, buffer);
   console.log(`Generated image for session ${session.id} at ${outputPath}`);
 }
-
