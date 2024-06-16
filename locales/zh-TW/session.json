@@ -17,5 +17,7 @@
   },
   "share_title": "COSCUP {year} 我想聽的議程們",
   "share_copied": "複製網址成功",
-  "share_no_favorites": "沒有收藏的議程可以分享"
+  "share_no_favorites": "沒有收藏的議程可以分享",
+  "schedule_conflicts": "注意！議程時間有衝突",
+  "schedule_no_conflicts": "議程時間沒有衝突"
 }

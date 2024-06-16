@@ -1,5 +1,8 @@
 <template>
   <article :class="{['session-filter']: true, active: active}">
+    <button class="fab CalendarMultipleCheck" :class="{ active }" @click="checkMySchedule" title="收藏議程時間衝突檢查">
+      <icon-mdi-calendar-multiple-check />
+    </button>
     <template v-if="!isFilterCollection">
       <button :class="{fab: true, bookmark: true, active: active}" @click="showFavorites">
         <icon-mdi-bookmark></icon-mdi-bookmark>
@@ -54,10 +57,15 @@ import { useI18n } from 'vue-i18n'
 import { Locale } from '@/modules/i18n'
 import { useRoute, useRouter } from 'vue-router'
 
+interface SessionTimeSpan {
+  startTime: Date;
+  endTime: Date;
+}
+
 export default defineComponent({
   name: 'SessionFilter',
   setup () {
-    const { filterOptions, filterValue, favoriteSessions } = useSession()
+    const { filterOptions, filterValue, favoriteSessions, getSessionById } = useSession()
     const { t, locale } = useI18n()
     const router = useRouter()
     const route = useRoute()
@@ -105,6 +113,36 @@ export default defineComponent({
       router.back()
     }
 
+    const checkMySchedule = () => {
+      const events: Array<SessionTimeSpan> = []
+
+      favoriteSessions.value.forEach((sessionId) => {
+        const session = computed(() => getSessionById(sessionId))
+        events.push({ startTime: new Date(session.value.start), endTime: new Date(session.value.end) })
+      })
+
+      let isConflict = false
+      for (let i = 0; i < events.length - 1; i++) {
+        for (let j = i + 1; j < events.length; j++) {
+          const eventA = events[i]
+          const eventB = events[j]
+          if (
+            (eventA.endTime > eventB.startTime && eventA.startTime < eventB.endTime) ||
+                  (eventB.endTime > eventA.startTime && eventB.startTime < eventA.endTime)
+          ) {
+            isConflict = true
+            break
+          }
+        }
+      }
+
+      if (isConflict) {
+        window.alert(t('session.schedule_conflicts'))
+      } else {
+        window.alert(t('session.schedule_no_conflicts'))
+      }
+    }
+
     const share = async () => {
       if (favoriteSessions.value.length === 0) {
         window.alert(t('session.share_no_favorites'))
@@ -139,7 +177,8 @@ export default defineComponent({
       close,
       share,
       hasFilters,
-      clearFilters
+      clearFilters,
+      checkMySchedule
     }
   }
 })

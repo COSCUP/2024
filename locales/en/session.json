@@ -17,5 +17,7 @@
   },
   "share_title": "The sessions I would like to attend at COSCUP {year}.",
   "share_copied": "Copy URL successfully.",
-  "share_no_favorites": "There are no favorite sessions to share at the moment."
+  "share_no_favorites": "There are no favorite sessions to share.",
+  "schedule_conflicts": "Notice! There is a clash or overlap between two or more sessions.",
+  "schedule_no_conflicts": "There is no clash or overlap between two or more sessions."
 }

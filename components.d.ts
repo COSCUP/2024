@@ -28,6 +28,7 @@ declare module '@vue/runtime-core' {
     IconIcRoundBrightnessAuto: typeof import('~icons/ic/round-brightness-auto')['default']
     IconMdiBookmark: typeof import('~icons/mdi/bookmark')['default']
     IconMdiBookmarkOutline: typeof import('~icons/mdi/bookmark-outline')['default']
+    IconMdiCalendarMultipleCheck: typeof import('~icons/mdi/calendar-multiple-check')['default']
     IconMdiClose: typeof import('~icons/mdi/close')['default']
     IconMdiFilterList: typeof import('~icons/mdi/filter-list')['default']
     IconMdiShareVariant: typeof import('~icons/mdi/share-variant')['default']
