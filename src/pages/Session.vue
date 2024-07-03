@@ -206,7 +206,7 @@ export default defineComponent({
   position: sticky;
   left: 0;
 
-  z-index: 3; /* Makes dropdown menu above table headers */
+  z-index: 1; /* Makes dropdown menu above table headers */
 
   label {
     align-self: center;

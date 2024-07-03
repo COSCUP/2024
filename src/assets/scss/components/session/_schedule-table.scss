@@ -17,6 +17,9 @@
     table-layout: fixed;
     height: 100%;
 
+    position: relative;
+    z-index: 0;
+
     .room-list {
       tr {
         th {
