@@ -11,10 +11,12 @@
     <ScheduleNavbar />
     <div class="time-zone-container">
       <label for="time-zone-select">{{ t('session.time_zone.select_label') }}</label>
+      <!-- Bind the currentTimeZone to the component key to reset input text on time zone change -->
       <ModelSelect
         id="time-zone-select"
-        :options="timeZoneOptions"
         v-model="currentTimeZone"
+        :options="timeZoneOptions"
+        :key="currentTimeZone"
       />
       <button
         @click="resetTimeZone"
