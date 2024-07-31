@@ -46,7 +46,7 @@
 <script lang="ts">
 // import io, { Socket } from 'socket.io-client'
 // import axios from 'axios'
-import { defineComponent, watch, ref } from 'vue'
+import { defineComponent, watch, ref, onMounted } from 'vue'
 import { useBreakpoints } from '@/modules/breakpoints'
 import { useSession } from '@/modules/session'
 import ScheduleNavbar from '@/components/Session/ScheduleNavbar.vue'
@@ -99,8 +99,7 @@ export default defineComponent({
       text: timeZone
     }))
     const defaultTimeZone = 'Asia/Taipei' // Time zone of the event
-    const storedTimeZone = localStorage.getItem('timeZone')
-    const currentTimeZone = ref(storedTimeZone ?? defaultTimeZone)
+    const currentTimeZone = ref(defaultTimeZone)
 
     const resetTimeZone = () => {
       currentTimeZone.value = defaultTimeZone
@@ -110,6 +109,13 @@ export default defineComponent({
     watch(currentTimeZone, () => {
       TIMEZONE_OFFSET.value = calculateTimezoneOffset(currentTimeZone.value)
       localStorage.setItem('timeZone', currentTimeZone.value)
+    })
+
+    onMounted(() => {
+      const storedTimeZone = localStorage.getItem('timeZone')
+      if (storedTimeZone) {
+        currentTimeZone.value = storedTimeZone
+      }
     })
 
     function getCommunityFromSession (session: Session) {
