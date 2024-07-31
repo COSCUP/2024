@@ -10,7 +10,6 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Action: typeof import('./src/components/App/Navbar/Basic/Action.vue')['default']
-    Emergency: typeof import('./src/components/App/Emergency.vue')['default']
     ExternalLink: typeof import('./src/components/App/Navbar/Basic/ExternalLink.vue')['default']
     Footer: typeof import('./src/components/App/Footer.vue')['default']
     HomeTab: typeof import('./src/components/App/Navbar/Custom/HomeTab.vue')['default']
