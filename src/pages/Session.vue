@@ -1,5 +1,6 @@
 <!--
   Copyright (c) 2020 DevilTea
+            (c) 2024 Riley Ho
 
   This software is released under the MIT License.
   https://opensource.org/licenses/MIT
@@ -8,7 +9,22 @@
 <template>
   <main id="session" class="page-container">
     <ScheduleNavbar />
-    <SessionFilter />
+    <div class="time-zone-container">
+      <label for="time-zone-select">{{ t('session.time_zone.select_label') }}</label>
+      <!-- Bind the currentTimeZone to the component key to reset input text on time zone change -->
+      <ModelSelect
+        id="time-zone-select"
+        v-model="currentTimeZone"
+        :options="timeZoneOptions"
+        :key="currentTimeZone"
+      />
+      <button
+        @click="resetTimeZone"
+        :class="{ available: currentTimeZone !== defaultTimeZone }"
+      >{{ t('session.time_zone.reset_button') }}</button
+      >
+    </div>
+    <SessionFilter/>
     <template v-for="(schedule, index) in daysSchedule">
       <ScheduleList
         v-if="xsOnly"
@@ -21,6 +37,7 @@
         v-show="currentDayIndex === index"
         :key="`table-${schedule.day.join('')}`"
         :table="schedule.table"
+        :currentTimeZone="currentTimeZone"
       />
     </template>
   </main>
@@ -29,15 +46,17 @@
 <script lang="ts">
 // import io, { Socket } from 'socket.io-client'
 // import axios from 'axios'
-import { defineComponent, watch } from 'vue'
+import { defineComponent, watch, ref, onMounted } from 'vue'
 import { useBreakpoints } from '@/modules/breakpoints'
 import { useSession } from '@/modules/session'
 import ScheduleNavbar from '@/components/Session/ScheduleNavbar.vue'
 import ScheduleTable from '@/components/Session/ScheduleTable.vue'
 import ScheduleList from '@/components/Session/ScheduleList.vue'
 import SessionFilter from '@/components/Session/SessionFilter.vue'
+import { ModelSelect } from 'vue-search-select'
 
 import '@/assets/scss/pages/session.scss'
+import 'vue-search-select/dist/VueSearchSelect.css'
 import { usePopUp } from '@/modules/pop-up'
 import { useRoute, useRouter } from 'vue-router'
 import { generateSessionPopupData } from '@/modules/session/logic'
@@ -46,6 +65,7 @@ import { Locale } from '@/modules/i18n'
 import { isClient } from '@vueuse/shared'
 import communityData from '@/assets/json/community.json'
 import { Session } from '@/modules/session/types'
+import { calculateTimezoneOffset } from '@/modules/session/timezone'
 
 export default defineComponent({
   name: 'Session',
@@ -53,15 +73,50 @@ export default defineComponent({
     ScheduleNavbar,
     ScheduleTable,
     ScheduleList,
-    SessionFilter
+    SessionFilter,
+    ModelSelect
   },
   setup () {
     const route = useRoute()
     const router = useRouter()
-    const { load, daysSchedule, currentDayIndex, getSessionById, isLoaded } = useSession()
-    const { openPopUp, removeAll } = usePopUp()
+    const {
+      load,
+      daysSchedule,
+      currentDayIndex,
+      getSessionById,
+      isLoaded,
+      TIMEZONE_OFFSET
+    } = useSession()
+    const {
+      openPopUp,
+      removeAll
+    } = usePopUp()
     const { xsOnly } = useBreakpoints()
-    const { locale } = useI18n()
+    const { t, locale } = useI18n()
+
+    const timeZoneOptions = Intl.supportedValuesOf('timeZone').map((timeZone) => ({
+      value: timeZone,
+      text: timeZone
+    }))
+    const defaultTimeZone = 'Asia/Taipei' // Time zone of the event
+    const currentTimeZone = ref(defaultTimeZone)
+
+    const resetTimeZone = () => {
+      currentTimeZone.value = defaultTimeZone
+      localStorage.removeItem('timeZone')
+    }
+
+    watch(currentTimeZone, () => {
+      TIMEZONE_OFFSET.value = calculateTimezoneOffset(currentTimeZone.value)
+      localStorage.setItem('timeZone', currentTimeZone.value)
+    })
+
+    onMounted(() => {
+      const storedTimeZone = localStorage.getItem('timeZone')
+      if (storedTimeZone) {
+        currentTimeZone.value = storedTimeZone
+      }
+    })
 
     function getCommunityFromSession (session: Session) {
       return communityData.communities.find((c) => c.track === session.type['zh-TW'].name)
@@ -126,12 +181,18 @@ export default defineComponent({
     })
 
     return {
+      t,
       xsOnly,
       currentDayIndex,
       daysSchedule,
       load,
       tryToOpenSessionPopUp,
-      route
+      route,
+      timeZoneOptions,
+      currentTimeZone,
+      defaultTimeZone,
+      resetTimeZone,
+      TIMEZONE_OFFSET
     }
   },
   async serverPrefetch () {
@@ -142,3 +203,46 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped lang="scss">
+.time-zone-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  width: 100vw;
+  position: sticky;
+  left: 0;
+
+  z-index: 1; /* Makes dropdown menu above table headers */
+
+  label {
+    align-self: center;
+    white-space: nowrap;
+  }
+
+  .dropdown {
+    max-width: 20rem;
+    white-space: nowrap;
+  }
+
+  button {
+    visibility: hidden;
+    opacity: 0;
+    width: 0;
+    white-space: nowrap;
+    margin-left: -0.5rem; /* Remove flex gap when hidden */
+    transform: translateX(-100%); /* Slide from the left */
+    transition: opacity 0.5s, transform 0.5s;
+    padding: 0.5rem 1rem;
+  }
+
+  .available {
+    visibility: visible;
+    opacity: 1;
+    margin-left: 0;
+    width: auto;
+    transform: translateX(0%);
+  }
+}
+</style>

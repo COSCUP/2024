@@ -11,8 +11,6 @@ import type { MetaOptions } from '../metas'
 import type { PopUpData } from '../pop-up'
 import type { Session, ScheduleElement, RawData, SessionType, Room, Speaker, Tag, SessionsMap, ScheduleList, YearOfDate, MonthOfDate, DateOfDate, SchedulDay, HourOfDate, MinuteOfDate, ScheduleTable, RoomId, ScheduleTableBodyCell, ScheduleTableBlankCell, ScheduleTableSpanCell, RoomsMap } from './types'
 
-export const TIMEZONE_OFFSET: number = -480
-
 const ROOM_ORDER: RoomId[] = [
   'RB105', 'RB101', 'RB102',
   'TR209', 'TR210', 'TR211', 'TR212', 'TR213', 'TR214',
@@ -20,7 +18,6 @@ const ROOM_ORDER: RoomId[] = [
   'TR409-2', 'TR410', 'TR411', 'TR412-1', 'TR412-2', 'TR413-1',
   'TR510', 'TR511', 'TR512', 'TR513', 'TR514',
   'TR609', 'TR610', 'TR611', 'TR613', 'TR614', 'TR615', 'TR616'
-
 ]
 
 const compareRoomById = (a: string, b: string) => {
@@ -39,7 +36,7 @@ function filterAndSortScheduleElements (elements: ScheduleElement[]): ScheduleEl
 
 function getTimePoints (elements: ScheduleElement[], includeEndTime = true): [HourOfDate, MinuteOfDate][] {
   const format = (time: [HourOfDate, MinuteOfDate]) => time.map(padNumberStart2WithZero).join('')
-  const timePoints = uniqWith<[HourOfDate, MinuteOfDate]>(
+  return uniqWith<[HourOfDate, MinuteOfDate]>(
     elements
       .flatMap(s => includeEndTime
         ? [getPartsOfDate(s.start), getPartsOfDate(s.end)]
@@ -47,7 +44,6 @@ function getTimePoints (elements: ScheduleElement[], includeEndTime = true): [Ho
       .map(({ hour, minute }) => [hour, minute]),
     (a, b) => format(a) === format(b)
   ).sort((a, b) => +format(a) - +format(b))
-  return timePoints
 }
 
 export function transformRawData (rawData: RawData, timeZoneOffsetMinutes: number | null = null) {
@@ -173,7 +169,7 @@ export function generateScheduleTable (elements: ScheduleElement[]): ScheduleTab
             const { hour, minute } = getPartsOfDate(d)
             return timePoints.findIndex(([h, m]) => h === hour && m === minute)
           })
-        const span = Math.abs(endIndex - startIndex)
+        const span = endIndex - startIndex
         if (cells.slice(startIndex, endIndex).some(c => c.type !== 'blank')) {
           console.warn(`Session: ${e.session} is overlapping with others`)
           return
