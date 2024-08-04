@@ -157,6 +157,11 @@
       list-style-type: decimal;
     }
 
+    sup {
+      font-size: .8em;
+      vertical-align: super;
+    }
+
     code {
       display: inline-block;
       border-radius: 5px;
