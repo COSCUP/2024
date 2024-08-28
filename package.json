@@ -59,6 +59,7 @@
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
     "@iconify/json": "^2.2.52",
+    "@types/js-md5": "^0.7.2",
     "@types/lodash-es": "^4.17.12",
     "@types/markdown-it": "^12.2.3",
     "@types/node": "^18.15.11",

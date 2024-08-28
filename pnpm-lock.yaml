@@ -4,6 +4,7 @@ specifiers:
   '@faker-js/faker': ^7.6.0
   '@gtm-support/vue-gtm': ^2.0.0
   '@iconify/json': ^2.2.52
+  '@types/js-md5': ^0.7.2
   '@types/lodash-es': ^4.17.12
   '@types/markdown-it': ^12.2.3
   '@types/node': ^18.15.11
@@ -119,6 +120,7 @@ dependencies:
 devDependencies:
   '@faker-js/faker': 7.6.0
   '@iconify/json': 2.2.63
+  '@types/js-md5': 0.7.2
   '@types/lodash-es': 4.17.12
   '@types/markdown-it': 12.2.3
   '@types/node': 18.16.7
@@ -2160,6 +2162,10 @@ packages:
 
   /@types/estree/1.0.1:
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
+    dev: true
+
+  /@types/js-md5/0.7.2:
+    resolution: {integrity: sha512-IwcFIov1JbiEToo3DgrVEwkMUR1BVlVyLjk245AzGHyyOlyddDFIeSIZO+WlhTortOa4P1PdCS8cDrTl7RW1HA==}
     dev: true
 
   /@types/json-schema/7.0.11:
