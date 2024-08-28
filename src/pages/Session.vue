@@ -191,8 +191,7 @@ export default defineComponent({
       timeZoneOptions,
       currentTimeZone,
       defaultTimeZone,
-      resetTimeZone,
-      TIMEZONE_OFFSET
+      resetTimeZone
     }
   },
   async serverPrefetch () {
@@ -213,7 +212,6 @@ export default defineComponent({
   width: 100vw;
   position: sticky;
   left: 0;
-
   z-index: 1; /* Makes dropdown menu above table headers */
 
   label {

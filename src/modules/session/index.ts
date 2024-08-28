@@ -37,6 +37,7 @@ interface UseSession {
   getRoomById: (id: RoomId) => Room;
   getRoomStatusById: (id: RoomId) => RoomStatus;
   load: () => Promise<void>;
+  TIMEZONE_OFFSET: Ref<number>;
 }
 
 const PROVIDE_KEY: InjectionKey<UseSession> = Symbol('session')
@@ -114,7 +115,7 @@ const _useSession = (): UseSession => {
     start()
     const { default: _rawData } = await import('@/assets/json/session.json')
     const { scheduleElements: _scheduleElements, sessionsMap: __sessionsMap, roomsMap: _roomsMap } =
-      transformRawData(_rawData, TIMEZONE_OFFSET)
+      transformRawData(_rawData, TIMEZONE_OFFSET.value)
 
     scheduleElements.value = _scheduleElements
     _sessionsMap.value = __sessionsMap
@@ -220,6 +221,12 @@ const _useSession = (): UseSession => {
     }
   })
 
+  watch(TIMEZONE_OFFSET, (oldVal, newVal) => {
+    if (oldVal === newVal) return
+    isLoaded.value = false
+    load()
+  })
+
   const getSessionById = (id: SessionId): Session => {
     const session = sessionsMap.value?.[id] ?? null
     if (session === null) throw new Error(`Can not find session: ${id} in sessions map`)
@@ -256,7 +263,7 @@ const _useSession = (): UseSession => {
       currentSessions.value = []
       return
     }
-    const currentTime = fixedTimeZoneDate(new Date(), TIMEZONE_OFFSET).getTime()
+    const currentTime = fixedTimeZoneDate(new Date(), TIMEZONE_OFFSET.value).getTime()
     // const currentTime = fixedTimeZoneDate(new Date('2024-08-03 10:20'), TIMEZONE_OFFSET).getTime()
     currentSessions.value = Object.values(sessionsMap.value)
       .filter(s => s.start.getTime() <= currentTime && currentTime <= s.end.getTime())
@@ -286,7 +293,7 @@ const _useSession = (): UseSession => {
       // const attendanceLength = Object.keys(data.attendance)
       const roomStatus: Record<RoomId, boolean> = {}
       // const currentTime = fixedTimeZoneDate(new Date('2024-08-03 10:20'), TIMEZONE_OFFSET).getTime()
-      const currentTime = fixedTimeZoneDate(new Date(), TIMEZONE_OFFSET).getTime()
+      const currentTime = fixedTimeZoneDate(new Date(), TIMEZONE_OFFSET.value).getTime()
       if (sessionsMap.value) {
         currentSessions.value = Object.values(sessionsMap.value)
           .filter(s => s.start.getTime() <= currentTime && currentTime <= s.end.getTime())
@@ -327,7 +334,8 @@ const _useSession = (): UseSession => {
     getRoomById,
     getRoomStatusById,
     load,
-    favoriteSessions
+    favoriteSessions,
+    TIMEZONE_OFFSET
   }
 }
 
