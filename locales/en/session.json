@@ -15,6 +15,10 @@
     "clear": "Clear all filters",
     "search": "Search"
   },
+  "time_zone": {
+    "select_label": "Time Zone: ",
+    "reset_button": "Reset to conference time"
+  },
   "share_title": "The sessions I would like to attend at COSCUP {year}.",
   "share_copied": "Copy URL successfully.",
   "share_no_favorites": "There are no favorite sessions to share.",
