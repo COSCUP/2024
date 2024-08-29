@@ -277,6 +277,12 @@
       height: $banner-containr-height;
       background-position: center;
       max-width: 100%;
+
+      .logo-wrapper .logo-container .logo-content img {
+        min-width: 7rem;
+        padding: 0.7rem;
+      }
+      
     }
 
     .info-container {
@@ -320,6 +326,16 @@
           line-height: 1.75;
         }
       }
+    }
+  }
+
+  @include smAndUp {
+    $banner-containr-height: 200px;
+
+    .banner-container {
+      height: $banner-containr-height;
+      background-position: center;
+      max-width: 100%;
     }
   }
 }
