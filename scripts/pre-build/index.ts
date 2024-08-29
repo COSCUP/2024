@@ -15,7 +15,7 @@ import generateTopics from './generateTopics'
 import generateFringe from './generateFringe'
 
 (async () => {
-  const spinner = ora('Strart pre-building...').start()
+  const spinner = ora('Start pre-building...').start()
   try {
     const doc = await getLoadedSpreadsheetDocument()
     await Promise.all([

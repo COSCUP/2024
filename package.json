@@ -4,19 +4,18 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "pre-build": "npm run ts -- ./scripts/pre-build/index.ts",
     "dev": "vite",
     "serve": "vite preview",
-    "build": "npm run pre-build && vite-ssg build && npm run end-build",
-    "lint": "npm run lint:eslint && npm run lint:stylelint",
+    "prebuild": "tsx ./scripts/pre-build/index.ts",
+    "build": "vite-ssg build",
+    "postbuild": "tsx ./scripts/end-build/index.ts",
+    "lint": "pnpm lint:eslint && pnpm lint:stylelint",
     "lint:eslint": "eslint --ext .js,.ts,.vue src/ --fix",
     "lint:stylelint": "stylelint 'src/**/*.{css,scss,sass,vue}' --fix",
-    "ts": "esno",
-    "end-build": "npm run ts -- ./scripts/end-build/index.ts",
     "tool:generate-sitemap": "node ./scripts/tools/generateSitemap.js",
     "tool:generate-sitemap:local": "node ./scripts/tools/generateSitemap.js --local",
     "tool:optimize-png": "node ./scripts/tools/optimizePng.js",
-    "tool:download-static-resource": "npm run ts -- ./scripts/tools/downloadStaticResource.ts"
+    "tool:download-static-resource": "tsx ./scripts/tools/downloadStaticResource.ts"
   },
   "dependencies": {
     "@gtm-support/vue-gtm": "^2.0.0",
@@ -60,10 +59,10 @@
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
     "@iconify/json": "^2.2.52",
+    "@types/js-md5": "^0.7.2",
     "@types/lodash-es": "^4.17.12",
     "@types/markdown-it": "^12.2.3",
     "@types/node": "^18.15.11",
-    "@types/ol": "^7.0.0",
     "@types/prismjs": "^1.26.0",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",
@@ -72,7 +71,6 @@
     "@vue/server-renderer": "^3.2.47",
     "@vueuse/head": "^1.1.26",
     "dotenv": "^16.0.3",
-    "esbuild": "^0.17.17",
     "eslint": "^8.38.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
@@ -80,7 +78,6 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-vue": "^9.11.0",
-    "esno": "^0.16.3",
     "find": "^0.3.0",
     "google-spreadsheet": "^3.3.0",
     "koa": "^2.14.2",
@@ -92,14 +89,16 @@
     "sass": "^1.62.0",
     "sitemap-generator": "^8.5.1",
     "stylelint": "^15.5.0",
+    "tsx": "^4.19.0",
     "typescript": "^5.1.6",
     "unplugin-vue-components": "^0.24.1",
     "vite": "^4.2.2",
     "vite-plugin-pwa": "^0.14.7",
     "vite-ssg": "^0.22.2"
   },
+  "packageManager": "pnpm@7.33.7",
   "volta": {
     "node": "18.20.0",
-    "pnpm": "7.12.2"
+    "pnpm": "7.33.7"
   }
 }
